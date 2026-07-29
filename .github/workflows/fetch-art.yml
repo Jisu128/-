@@ -1,0 +1,45 @@
+name: Fetch stage artwork
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download and compress artwork
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick webp
+          BASE="https://d8j0ntlcm91z4.cloudfront.net/user_31Pz1iFip9QTKm2k9GdYaKOOGTI"
+          declare -a FILES=(
+            "hf_20260729_092232_ae3e573b-3377-4d24-bada-149ce48d9dd8.png"
+            "hf_20260729_092505_454ede4a-e01d-4d01-aaf7-755ee5584935.png"
+            "hf_20260729_092508_1dd54cf9-134e-4747-b59f-97d2e6681874.png"
+            "hf_20260729_092512_a4ddca12-9f62-4ed7-a29d-32dcc0f04a05.png"
+            "hf_20260729_092518_fe3f7871-c1cc-4828-8eeb-0bfc15bbdda6.png"
+            "hf_20260729_092522_14c7b9f8-5f19-4a1a-96ae-944293080fd3.png"
+            "hf_20260729_092525_7080fb3b-af55-41c2-a321-8a93ee291ab8.png"
+            "hf_20260729_092530_1e4865fd-8f4b-49f7-86c2-8ea4510ffe9d.png"
+          )
+          mkdir -p web/art ios-art tmp-art
+          for i in "${!FILES[@]}"; do
+            curl -fsSL -o "tmp-art/stage$i.png" "$BASE/${FILES[$i]}"
+            convert "tmp-art/stage$i.png" -resize 640x -quality 74 -define webp:method=6 "web/art/stage$i.webp"
+            convert "tmp-art/stage$i.png" -resize 1024x -quality 84 "ios-art/stage$i.jpg"
+          done
+          rm -rf tmp-art
+          ls -la web/art ios-art
+
+      - name: Commit artwork
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add web/art ios-art
+          git commit -m "스테이지 일러스트 추가 (자동 다운로드)"
+          git push

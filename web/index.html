@@ -1,0 +1,779 @@
+<title>공주핑트 🎀</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+  :root{
+    --bg:#FFF4F7; --bg2:#FDEAF0; --card:#FFFFFF;
+    --ink:#59414B; --muted:#A08894;
+    --rose:#F26D9C; --rose-deep:#E0517F; --rose-soft:#FCD7E4;
+    --gold:#D89A2B; --gold-soft:#FCEED2;
+    --mint:#4FB587; --line:#F5DCE5;
+    --shadow:0 6px 18px rgba(226,122,160,.16);
+    --debt:#E05A5A;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#241A26; --bg2:#2C202E; --card:#332637;
+      --ink:#F4E3EA; --muted:#B79CA9;
+      --rose:#F78FB5; --rose-deep:#F26D9C; --rose-soft:#4A2F3D;
+      --gold:#F0BC5E; --gold-soft:#453524;
+      --mint:#7FD4AC; --line:#463349;
+      --shadow:0 6px 18px rgba(0,0,0,.35);
+      --debt:#F08A8A;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#FFF4F7; --bg2:#FDEAF0; --card:#FFFFFF;
+    --ink:#59414B; --muted:#A08894;
+    --rose:#F26D9C; --rose-deep:#E0517F; --rose-soft:#FCD7E4;
+    --gold:#D89A2B; --gold-soft:#FCEED2;
+    --mint:#4FB587; --line:#F5DCE5;
+    --shadow:0 6px 18px rgba(226,122,160,.16);
+    --debt:#E05A5A;
+  }
+  :root[data-theme="dark"]{
+    --bg:#241A26; --bg2:#2C202E; --card:#332637;
+    --ink:#F4E3EA; --muted:#B79CA9;
+    --rose:#F78FB5; --rose-deep:#F26D9C; --rose-soft:#4A2F3D;
+    --gold:#F0BC5E; --gold-soft:#453524;
+    --mint:#7FD4AC; --line:#463349;
+    --shadow:0 6px 18px rgba(0,0,0,.35);
+    --debt:#F08A8A;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:linear-gradient(var(--bg), var(--bg2));
+    min-height:100dvh;
+    color:var(--ink);
+    font-family:-apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+    line-height:1.5;
+  }
+  .num{font-family:ui-rounded, -apple-system, "Apple SD Gothic Neo", sans-serif; font-variant-numeric:tabular-nums;}
+
+  #app{max-width:448px; margin:0 auto; padding:0 16px calc(84px + env(safe-area-inset-bottom));}
+
+  /* ── 헤더 ── */
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 2px 10px;
+  }
+  header h1{font-size:19px; margin:0; letter-spacing:-.2px;}
+  #headerGold{
+    display:flex; align-items:center; gap:5px;
+    background:var(--gold-soft); color:var(--gold);
+    font-weight:700; font-size:14px;
+    padding:6px 12px; border-radius:999px;
+  }
+
+  /* ── 카드 공통 ── */
+  .card{
+    background:var(--card); border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:18px; margin-bottom:14px;
+  }
+  .label{font-size:12px; color:var(--muted); font-weight:600; letter-spacing:.02em;}
+
+  /* ── 집 디오라마 ── */
+  #scene{
+    position:relative; overflow:hidden; border-radius:22px;
+    box-shadow:var(--shadow); margin-bottom:14px;
+    padding:26px 18px 0; text-align:center;
+    min-height:190px;
+  }
+  #scene .sky{position:absolute; inset:0; transition:opacity .8s;}
+  .sky-0{background:linear-gradient(#8E93A6,#CBC3CC);}
+  .sky-1{background:linear-gradient(#A6A0B8,#E3D9DE);}
+  .sky-2{background:linear-gradient(#9FC6E8,#EAF3F7);}
+  .sky-3{background:linear-gradient(#A8D8EF,#FDF3E7);}
+  .sky-4{background:linear-gradient(#8FD0F0,#FFF8EC);}
+  .sky-5{background:linear-gradient(#B79CE8,#FFE3F0);}
+  .sky-6{background:linear-gradient(#7FA8E8,#E8F0FF);}
+  .sky-7{background:linear-gradient(#F7C978,#FFEDF5);}
+  #scene .hill{
+    position:absolute; left:-12%; right:-12%; bottom:-52px; height:96px;
+    background:#B7DBA8; border-radius:50% 50% 0 0;
+  }
+  .sky-0 ~ .hill, .stage-dark .hill{background:#9AAE90;}
+  #scene .inner{position:relative;}
+  #house{font-size:74px; line-height:1.15; display:block; filter:drop-shadow(0 6px 8px rgba(0,0,0,.12));}
+  #princess{
+    position:absolute; font-size:30px; right:16%; bottom:2px;
+    animation:bob 2.6s ease-in-out infinite;
+  }
+  @keyframes bob{50%{transform:translateY(-6px);}}
+  .petal{
+    position:absolute; top:-24px; font-size:14px; opacity:.85;
+    animation:fall linear infinite;
+  }
+  @keyframes fall{
+    to{transform:translateY(240px) rotate(200deg); opacity:0;}
+  }
+  #houseName{
+    position:relative; font-size:17px; font-weight:800; margin-top:8px;
+    text-shadow:0 1px 0 rgba(255,255,255,.4);
+    color:#4A3540;
+  }
+  #stageBadge{
+    position:relative; display:inline-block; margin:6px 0 16px;
+    background:rgba(255,255,255,.82); color:var(--rose-deep);
+    font-size:12.5px; font-weight:700;
+    padding:4px 12px; border-radius:999px;
+  }
+
+  /* ── 스토리 말풍선 ── */
+  #storyBubble{
+    background:var(--rose-soft); border-radius:16px;
+    padding:12px 14px; font-size:13.5px; margin-bottom:14px;
+  }
+
+  /* ── 진행 바 ── */
+  .progress-wrap{margin-top:12px;}
+  .bar{
+    height:12px; background:var(--line); border-radius:999px; overflow:hidden;
+  }
+  .bar > i{
+    display:block; height:100%; border-radius:999px;
+    background:linear-gradient(90deg, var(--rose), var(--rose-deep));
+    transition:width .7s cubic-bezier(.3,1.2,.4,1);
+  }
+  .progress-meta{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-top:6px; font-size:12px; color:var(--muted);
+  }
+  .progress-meta b{color:var(--rose-deep);}
+
+  /* ── 돈 카드 ── */
+  .money-row{display:flex; gap:12px;}
+  .money-row .card{flex:1; text-align:center; margin-bottom:14px; padding:14px 10px;}
+  .money-row .val{font-size:19px; font-weight:800; margin-top:3px;}
+  .val.debt{color:var(--debt);}
+  .val.savings{color:var(--gold);}
+  .val.zero{color:var(--muted);}
+
+  /* ── 스트릭 ── */
+  #streakCard{display:flex; align-items:center; gap:12px;}
+  #streakCard .big{font-size:30px;}
+  #streakCard h3{margin:0; font-size:14.5px;}
+  #streakCard p{margin:2px 0 0; font-size:12.5px; color:var(--muted);}
+
+  /* ── 버튼 ── */
+  .btn{
+    display:block; width:100%; border:0; cursor:pointer;
+    background:linear-gradient(180deg, var(--rose), var(--rose-deep));
+    color:#fff; font-size:16.5px; font-weight:800;
+    font-family:inherit;
+    padding:16px; border-radius:20px;
+    box-shadow:0 8px 18px rgba(226,81,127,.32);
+    transition:transform .12s;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn:focus-visible, button:focus-visible{outline:3px solid var(--rose); outline-offset:2px;}
+  .btn[disabled]{opacity:.5;}
+
+  /* ── 탭바 ── */
+  nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:20;
+    background:var(--card);
+    border-top:1px solid var(--line);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  nav .row{max-width:448px; margin:0 auto; display:flex;}
+  nav button{
+    flex:1; border:0; background:none; cursor:pointer;
+    font-family:inherit; font-size:11.5px; font-weight:700;
+    color:var(--muted); padding:9px 0 7px;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+  }
+  nav button .ico{font-size:21px;}
+  nav button.active{color:var(--rose-deep);}
+
+  .screen{display:none;}
+  .screen.active{display:block; animation:fadein .25s;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);}}
+
+  /* ── 바텀시트 ── */
+  #overlay{
+    position:fixed; inset:0; z-index:30; background:rgba(60,30,45,.45);
+    opacity:0; pointer-events:none; transition:opacity .25s;
+  }
+  #overlay.show{opacity:1; pointer-events:auto;}
+  #sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:31;
+    transform:translateY(105%); transition:transform .3s cubic-bezier(.3,1,.3,1);
+    background:var(--card); border-radius:26px 26px 0 0;
+    max-height:88dvh; overflow-y:auto;
+  }
+  #sheet.show{transform:translateY(0);}
+  #sheet .inner{max-width:448px; margin:0 auto; padding:14px 20px calc(20px + env(safe-area-inset-bottom));}
+  #sheet .grip{width:44px; height:5px; border-radius:99px; background:var(--line); margin:0 auto 12px;}
+  #sheet h2{font-size:17px; margin:0 0 14px; text-align:center;}
+  .sheet-label{font-size:13px; font-weight:700; margin:16px 0 8px;}
+
+  .type-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
+  .type-grid button{
+    border:1.5px solid var(--line); background:var(--card); cursor:pointer;
+    font-family:inherit; color:var(--ink);
+    border-radius:14px; padding:9px 2px 7px;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+  }
+  .type-grid button .e{font-size:21px;}
+  .type-grid button .t{font-size:10.5px; font-weight:600;}
+  .type-grid button.sel{
+    background:var(--rose); border-color:var(--rose); color:#fff;
+    box-shadow:0 4px 10px rgba(226,81,127,.3);
+  }
+
+  .min-row{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px;}
+  .min-row button{
+    border:1.5px solid var(--line); background:var(--card); cursor:pointer;
+    font-family:inherit; color:var(--ink);
+    border-radius:999px; padding:7px 15px; font-size:13.5px; font-weight:700;
+    flex-shrink:0;
+  }
+  .min-row button.sel{background:var(--rose); border-color:var(--rose); color:#fff;}
+
+  #memo{
+    width:100%; border:1.5px solid var(--line); border-radius:14px;
+    background:var(--bg); color:var(--ink);
+    font-family:inherit; font-size:14px; padding:12px;
+  }
+  #memo::placeholder{color:var(--muted);}
+
+  #reward{
+    text-align:center; background:var(--gold-soft);
+    border-radius:16px; padding:12px; margin:18px 0 14px;
+  }
+  #reward .g{font-size:21px; font-weight:800; color:var(--gold);}
+  #reward .sub{font-size:11.5px; color:var(--muted); margin-top:2px;}
+
+  /* ── 일기 ── */
+  .stats{display:flex; text-align:center;}
+  .stats > div{flex:1;}
+  .stats > div + div{border-left:1px solid var(--line);}
+  .stats .v{font-size:16px; font-weight:800; margin-top:2px;}
+  .rec{display:flex; align-items:center; gap:12px; padding:13px 2px;}
+  .rec + .rec{border-top:1px solid var(--line);}
+  .rec .e{font-size:26px;}
+  .rec .mid{flex:1; min-width:0;}
+  .rec .t1{font-size:14px; font-weight:700;}
+  .rec .t2{font-size:11.5px; color:var(--muted);}
+  .rec .memo{font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .rec .gold{font-size:12.5px; font-weight:800; color:var(--gold); white-space:nowrap;}
+  .rec .del{
+    border:0; background:none; cursor:pointer; font-size:15px;
+    color:var(--muted); padding:6px;
+  }
+  .empty{text-align:center; padding:40px 0; color:var(--muted);}
+  .empty .e{font-size:52px;}
+
+  /* ── 스토리 로드맵 ── */
+  .stage-card{display:flex; gap:13px; align-items:flex-start;}
+  .stage-card.locked{opacity:.55;}
+  .stage-card.current{border:2px solid var(--rose);}
+  .stage-card .e{font-size:36px; width:48px; text-align:center; flex-shrink:0;}
+  .stage-card h3{margin:0; font-size:14.5px; display:flex; align-items:center; gap:7px; flex-wrap:wrap;}
+  .stage-card .here{
+    background:var(--rose); color:#fff; font-size:10.5px;
+    padding:2px 9px; border-radius:999px;
+  }
+  .stage-card p{margin:3px 0 0; font-size:12px; color:var(--muted);}
+  .stage-card .cond{color:var(--rose); font-weight:600;}
+
+  /* ── 축하 오버레이 ── */
+  #celebrate{
+    position:fixed; inset:0; z-index:40; display:none;
+    background:linear-gradient(var(--bg), var(--bg2));
+    text-align:center; overflow:hidden;
+  }
+  #celebrate.show{display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px;}
+  #celebrate canvas{position:absolute; inset:0; pointer-events:none;}
+  #celebrate .h{font-size:88px; animation:pop .6s cubic-bezier(.3,1.6,.4,1);}
+  @keyframes pop{from{transform:scale(.3); opacity:0;}}
+  #celebrate h2{color:var(--rose-deep); margin:8px 0 4px;}
+  #celebrate .nm{font-size:19px; font-weight:800;}
+  #celebrate .tt{color:var(--rose-deep); font-weight:700; margin:4px 0;}
+  #celebrate .st{color:var(--muted); font-size:14px; max-width:300px; margin:6px auto 20px;}
+  #celebrate .btn{max-width:280px;}
+
+  #toast{
+    position:fixed; left:50%; bottom:calc(96px + env(safe-area-inset-bottom));
+    transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:var(--card);
+    font-size:13.5px; font-weight:700;
+    padding:10px 18px; border-radius:999px;
+    opacity:0; pointer-events:none; transition:.3s; z-index:50;
+    white-space:nowrap;
+  }
+  #toast.show{opacity:1; transform:translateX(-50%);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+
+<div id="app">
+  <header>
+    <h1>🎀 공주핑트</h1>
+    <div id="headerGold" class="num">💰 <span id="headerGoldVal">0G</span></div>
+  </header>
+
+  <!-- ── 홈 ── -->
+  <section class="screen active" id="screen-home">
+    <div id="scene">
+      <div class="sky sky-0" id="sky"></div>
+      <div class="hill"></div>
+      <div class="inner">
+        <span id="house">🏚️</span>
+        <span id="princess">😢</span>
+        <div id="houseName">다 쓰러져가는 오두막</div>
+        <div id="stageBadge">몰락한 공주</div>
+      </div>
+    </div>
+
+    <div id="storyBubble"></div>
+
+    <div class="card">
+      <div class="label" id="progressLabel">다음 집까지</div>
+      <div class="progress-wrap">
+        <div class="bar"><i id="progressFill" style="width:0%"></i></div>
+        <div class="progress-meta">
+          <span id="progressNext"></span>
+          <b class="num" id="progressPct">0%</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="money-row">
+      <div class="card">
+        <div class="label">💸 남은 빚</div>
+        <div class="val debt num" id="debtVal">1,000,000G</div>
+      </div>
+      <div class="card">
+        <div class="label">💰 모은 자산</div>
+        <div class="val savings num" id="savingsVal">0G</div>
+      </div>
+    </div>
+
+    <div class="card" id="streakCard">
+      <span class="big" id="streakEmoji">🌸</span>
+      <div>
+        <h3 id="streakTitle">연속 0일째 운동 중</h3>
+        <p id="streakSub">오늘 아직 운동 전이에요. 가볍게 시작해볼까요?</p>
+      </div>
+    </div>
+
+    <button class="btn" id="openSheet">오늘의 운동 기록하기 💪</button>
+  </section>
+
+  <!-- ── 일기 ── -->
+  <section class="screen" id="screen-history">
+    <div class="card stats">
+      <div><div class="label">🏃‍♀️ 총 운동</div><div class="v num" id="statCount">0회</div></div>
+      <div><div class="label">⏰ 총 시간</div><div class="v num" id="statMin">0분</div></div>
+      <div><div class="label">🔥 연속</div><div class="v num" id="statStreak">0일</div></div>
+    </div>
+    <div class="card" id="recordList"></div>
+  </section>
+
+  <!-- ── 스토리 ── -->
+  <section class="screen" id="screen-story">
+    <div id="stageList"></div>
+  </section>
+</div>
+
+<nav>
+  <div class="row">
+    <button class="active" data-screen="home"><span class="ico">🏠</span>공주님의 집</button>
+    <button data-screen="history"><span class="ico">📖</span>운동 일기</button>
+    <button data-screen="story"><span class="ico">✨</span>성장 스토리</button>
+  </div>
+</nav>
+
+<!-- ── 운동 기록 시트 ── -->
+<div id="overlay"></div>
+<div id="sheet" role="dialog" aria-label="운동 기록">
+  <div class="inner">
+    <div class="grip"></div>
+    <h2>오늘의 운동 🌸</h2>
+
+    <div class="sheet-label">어떤 운동을 했나요?</div>
+    <div class="type-grid" id="typeGrid"></div>
+
+    <div class="sheet-label">얼마나 했나요?</div>
+    <div class="min-row" id="minRow"></div>
+
+    <div class="sheet-label">한 줄 일기 (선택)</div>
+    <input id="memo" type="text" maxlength="60" placeholder="오늘의 기분은 어땠나요?">
+
+    <div id="reward">
+      <div class="label">예상 보상</div>
+      <div class="g num" id="rewardVal">✨ 0G ✨</div>
+      <div class="sub" id="rewardSub"></div>
+    </div>
+
+    <button class="btn" id="saveWorkout">운동 완료! 골드 받기 💰</button>
+  </div>
+</div>
+
+<!-- ── 축하 ── -->
+<div id="celebrate">
+  <canvas id="confetti"></canvas>
+  <div class="h" id="cHouse">🏠</div>
+  <h2>🎉 이사 축하해요! 🎉</h2>
+  <div class="nm" id="cName"></div>
+  <div class="tt" id="cTitle"></div>
+  <div class="st" id="cStory"></div>
+  <button class="btn" id="cClose">좋아요! 계속 달릴게요 💪</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+
+/* ── 게임 데이터 ── */
+const STARTING_DEBT = 1_000_000;
+const GOLD_PER_MIN = 1_000;
+const FIRST_BONUS = 10_000;
+const STREAK_BONUS = 1_000;
+const STREAK_CAP = 30_000;
+const MAX_MIN = 120;
+
+const TYPES = [
+  {id:"stretching", name:"스트레칭",    e:"🙆‍♀️"},
+  {id:"walking",    name:"산책·걷기",   e:"🚶‍♀️"},
+  {id:"home",       name:"홈트",        e:"🤸‍♀️"},
+  {id:"yoga",       name:"요가",        e:"🧘‍♀️"},
+  {id:"strength",   name:"근력",        e:"🏋️‍♀️"},
+  {id:"running",    name:"달리기",      e:"🏃‍♀️"},
+  {id:"cycling",    name:"자전거",      e:"🚴‍♀️"},
+  {id:"dance",      name:"댄스",        e:"💃"},
+];
+const MINUTES = [5,10,15,20,30,40,50,60,90,120];
+
+const STAGES = [
+  {req:-Infinity, house:"🏚️", name:"다 쓰러져가는 오두막", p:"😢", title:"몰락한 공주",
+   story:"왕국이 무너지고 빚더미에 앉은 공주님… 오늘부터 운동으로 재기를 노려요!"},
+  {req:-750_000, house:"🛖", name:"비는 안 새는 오두막", p:"🥺", title:"다시 일어서는 공주",
+   story:"지붕을 고쳤어요! 아직 갈 길이 멀지만 시작이 반이에요."},
+  {req:-500_000, house:"🏠", name:"아담한 시골집", p:"🙂", title:"씩씩한 공주",
+   story:"빚이 절반으로! 마을 사람들이 공주님의 성실함을 칭찬하기 시작했어요."},
+  {req:-250_000, house:"🏡", name:"정원이 있는 집", p:"😊", title:"소문난 부지런 공주",
+   story:"작은 정원에 꽃이 피었어요. 빚 청산이 코앞이에요!"},
+  {req:0, house:"🏘️", name:"마을에서 제일 예쁜 집", p:"😆", title:"빚 청산 공주",
+   story:"드디어 빚을 모두 갚았어요!! 이제부터는 모으는 일만 남았어요."},
+  {req:250_000, house:"🏛️", name:"우아한 저택", p:"🤗", title:"저택의 안주인",
+   story:"저택을 샀어요! 운동으로 다져진 공주님, 기품이 흘러넘쳐요."},
+  {req:500_000, house:"🏰", name:"언덕 위의 성", p:"😎", title:"성주가 된 공주",
+   story:"성을 되찾았어요! 왕국 재건이 눈앞이에요."},
+  {req:1_000_000, house:"👑", name:"찬란한 왕궁", p:"👸", title:"왕국을 되찾은 여왕님",
+   story:"운동으로 왕국을 되찾은 전설의 여왕님! 그래도 운동은 계속됩니다 💪"},
+];
+
+/* ── 상태 & 저장 ── */
+const KEY = "princess-fit-v1";
+let state = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){ const s = JSON.parse(raw); if(typeof s.debt==="number") return s; }
+  }catch(e){}
+  return {debt:STARTING_DEBT, savings:0, records:[], startedAt:Date.now()};
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+}
+
+/* ── 계산 ── */
+const fmt = n => n.toLocaleString("ko-KR") + "G";
+const netWorth = () => state.savings - state.debt;
+const stageIdx = () => {
+  let i = 0;
+  STAGES.forEach((s, k) => { if(netWorth() >= s.req) i = k; });
+  return i;
+};
+const dayKey = ts => { const d = new Date(ts); return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate(); };
+const didToday = () => state.records.some(r => dayKey(r.date) === dayKey(Date.now()));
+
+function streak(){
+  const days = new Set(state.records.map(r => dayKey(r.date)));
+  if(!days.size) return 0;
+  let d = new Date(); d.setHours(0,0,0,0);
+  if(!days.has(dayKey(d))) d.setDate(d.getDate()-1);
+  let n = 0;
+  while(days.has(dayKey(d))){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+
+function calcGold(min, firstToday, st){
+  let g = Math.min(min, MAX_MIN) * GOLD_PER_MIN;
+  if(firstToday) g += FIRST_BONUS + Math.min(st * STREAK_BONUS, STREAK_CAP);
+  return g;
+}
+
+function progress(){
+  const i = stageIdx();
+  if(i >= STAGES.length-1) return {pct:1, next:null};
+  const from = i === 0 ? -STARTING_DEBT : STAGES[i].req;
+  const to = STAGES[i+1].req;
+  return {pct: Math.min(Math.max((netWorth()-from)/(to-from), 0), 1), next: STAGES[i+1]};
+}
+
+/* ── 렌더 ── */
+const $ = id => document.getElementById(id);
+
+function render(){
+  const i = stageIdx(), s = STAGES[i], pr = progress(), st = streak(), today = didToday();
+
+  $("headerGoldVal").textContent = fmt(state.savings);
+  $("sky").className = "sky sky-" + i;
+  $("house").textContent = s.house;
+  $("princess").textContent = s.p;
+  $("houseName").textContent = s.name;
+  $("stageBadge").textContent = s.p + " " + s.title;
+  $("storyBubble").textContent = "💌 " + s.story;
+
+  if(pr.next){
+    $("progressLabel").textContent = "다음 집까지";
+    $("progressFill").style.width = (pr.pct*100).toFixed(1) + "%";
+    $("progressNext").textContent = "다음 집: " + pr.next.house + " " + pr.next.name;
+    $("progressPct").textContent = Math.floor(pr.pct*100) + "%";
+  }else{
+    $("progressLabel").textContent = "최고 등급 달성!";
+    $("progressFill").style.width = "100%";
+    $("progressNext").textContent = "여왕님 만세! 👑";
+    $("progressPct").textContent = "100%";
+  }
+
+  $("debtVal").textContent = fmt(state.debt);
+  $("debtVal").className = "val num " + (state.debt > 0 ? "debt" : "zero");
+  $("savingsVal").textContent = fmt(state.savings);
+
+  $("streakEmoji").textContent = today ? "✅" : "🌸";
+  $("streakTitle").textContent = "🔥 연속 " + st + "일째 운동 중";
+  $("streakSub").textContent = today
+    ? "오늘의 운동 완료! 정말 대단해요 💕"
+    : "오늘 아직 운동 전이에요. 가볍게 시작해볼까요?";
+  $("openSheet").textContent = today ? "운동 더 하기 💪" : "오늘의 운동 기록하기 💪";
+
+  renderHistory(st);
+  renderStages(i);
+}
+
+function renderHistory(st){
+  $("statCount").textContent = state.records.length + "회";
+  $("statMin").textContent = state.records.reduce((a,r)=>a+r.minutes,0) + "분";
+  $("statStreak").textContent = st + "일";
+
+  const list = $("recordList");
+  list.innerHTML = "";
+  if(!state.records.length){
+    list.innerHTML = '<div class="empty"><div class="e">🌷</div><b>아직 기록이 없어요</b><br><small>첫 운동을 기록하면 공주님의 이야기가 시작돼요!</small></div>';
+    return;
+  }
+  state.records.forEach(r => {
+    const t = TYPES.find(t=>t.id===r.type) || TYPES[0];
+    const d = new Date(r.date);
+    const row = document.createElement("div");
+    row.className = "rec";
+    row.innerHTML =
+      '<span class="e"></span>' +
+      '<div class="mid"><div class="t1"></div><div class="t2 num"></div><div class="memo"></div></div>' +
+      '<span class="gold num"></span>' +
+      '<button class="del" aria-label="기록 삭제">🗑️</button>';
+    row.querySelector(".e").textContent = t.e;
+    row.querySelector(".t1").textContent = t.name + " · " + r.minutes + "분";
+    row.querySelector(".t2").textContent =
+      (d.getMonth()+1) + "월 " + d.getDate() + "일 " +
+      String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+    const memoEl = row.querySelector(".memo");
+    if(r.memo) memoEl.textContent = "💭 " + r.memo; else memoEl.remove();
+    row.querySelector(".gold").textContent = "+" + fmt(r.gold);
+    row.querySelector(".del").addEventListener("click", () => {
+      if(!confirm("이 기록을 삭제할까요? 받은 골드도 돌려줘야 해요 🥺")) return;
+      const back = Math.min(state.savings, r.gold);
+      state.savings -= back;
+      state.debt += r.gold - back;
+      state.records = state.records.filter(x => x.id !== r.id);
+      save(); render();
+    });
+    list.appendChild(row);
+  });
+}
+
+function renderStages(cur){
+  const wrap = $("stageList");
+  wrap.innerHTML = "";
+  STAGES.forEach((s, k) => {
+    const unlocked = k <= cur;
+    const el = document.createElement("div");
+    el.className = "card stage-card" + (k===cur?" current":"") + (unlocked?"":" locked");
+    let cond = "";
+    if(k > 0){
+      cond = s.req <= 0
+        ? "빚 " + fmt(STARTING_DEBT + s.req) + " 갚으면 도달"
+        : "자산 " + fmt(s.req) + " 모으면 도달";
+    }
+    el.innerHTML =
+      '<span class="e"></span>' +
+      '<div><h3><span class="hn"></span></h3><p class="pt"></p><p class="ps"></p><p class="cond num"></p></div>';
+    el.querySelector(".e").textContent = unlocked ? s.house : "🔒";
+    el.querySelector(".hn").textContent = unlocked ? s.name : "???";
+    if(k===cur){
+      const b = document.createElement("span");
+      b.className = "here"; b.textContent = "지금 여기!";
+      el.querySelector("h3").appendChild(b);
+    }
+    el.querySelector(".pt").textContent = unlocked ? (s.p + " " + s.title) : "운동을 계속하면 열려요";
+    const ps = el.querySelector(".ps");
+    if(unlocked) ps.textContent = s.story; else ps.remove();
+    const cd = el.querySelector(".cond");
+    if(cond) cd.textContent = cond; else cd.remove();
+    wrap.appendChild(el);
+  });
+}
+
+/* ── 탭 ── */
+document.querySelectorAll("nav button").forEach(b => {
+  b.addEventListener("click", () => {
+    document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+    document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    $("screen-" + b.dataset.screen).classList.add("active");
+  });
+});
+
+/* ── 바텀시트 ── */
+let selType = TYPES[0].id, selMin = 20;
+
+function buildSheet(){
+  const tg = $("typeGrid");
+  tg.innerHTML = "";
+  TYPES.forEach(t => {
+    const b = document.createElement("button");
+    b.innerHTML = '<span class="e"></span><span class="t"></span>';
+    b.querySelector(".e").textContent = t.e;
+    b.querySelector(".t").textContent = t.name;
+    b.addEventListener("click", () => { selType = t.id; syncSheet(); });
+    b.dataset.id = t.id;
+    tg.appendChild(b);
+  });
+  const mr = $("minRow");
+  mr.innerHTML = "";
+  MINUTES.forEach(m => {
+    const b = document.createElement("button");
+    b.textContent = m + "분";
+    b.dataset.min = m;
+    b.addEventListener("click", () => { selMin = m; syncSheet(); });
+    mr.appendChild(b);
+  });
+}
+function syncSheet(){
+  document.querySelectorAll("#typeGrid button").forEach(b => b.classList.toggle("sel", b.dataset.id===selType));
+  document.querySelectorAll("#minRow button").forEach(b => b.classList.toggle("sel", +b.dataset.min===selMin));
+  const first = !didToday();
+  const g = calcGold(selMin, first, streak() + (first?1:0));
+  $("rewardVal").textContent = "✨ " + fmt(g) + " ✨";
+  $("rewardSub").textContent = first ? "오늘 첫 운동 보너스 + 연속 출석 보너스 포함이에요 🎁" : "";
+}
+function openSheet(){ buildSheet(); syncSheet(); $("overlay").classList.add("show"); $("sheet").classList.add("show"); }
+function closeSheet(){ $("overlay").classList.remove("show"); $("sheet").classList.remove("show"); }
+
+$("openSheet").addEventListener("click", openSheet);
+$("overlay").addEventListener("click", closeSheet);
+
+$("saveWorkout").addEventListener("click", () => {
+  const before = stageIdx();
+  const first = !didToday();
+  const g = calcGold(selMin, first, streak() + (first?1:0));
+
+  state.records.unshift({
+    id: Date.now() + "-" + Math.random().toString(36).slice(2,7),
+    date: Date.now(), type: selType, minutes: selMin,
+    gold: g, memo: $("memo").value.trim()
+  });
+  let rem = g;
+  if(state.debt > 0){ const pay = Math.min(state.debt, rem); state.debt -= pay; rem -= pay; }
+  state.savings += rem;
+  save();
+
+  $("memo").value = "";
+  closeSheet();
+  render();
+
+  const after = stageIdx();
+  if(after > before) showCelebrate(STAGES[after]);
+  else toast("+" + fmt(g) + " 획득! 공주님 최고 💕");
+});
+
+/* ── 토스트 ── */
+let toastTimer;
+function toast(msg){
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("show"), 2600);
+}
+
+/* ── 축하 & 컨페티 ── */
+function showCelebrate(s){
+  $("cHouse").textContent = s.house;
+  $("cName").textContent = s.name;
+  $("cTitle").textContent = s.p + " " + s.title;
+  $("cStory").textContent = s.story;
+  $("celebrate").classList.add("show");
+  runConfetti();
+}
+$("cClose").addEventListener("click", () => {
+  $("celebrate").classList.remove("show");
+  stopConfetti();
+});
+
+let confettiRAF = null;
+function runConfetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cv = $("confetti"), ctx = cv.getContext("2d");
+  cv.width = innerWidth; cv.height = innerHeight;
+  const colors = ["#F26D9C","#E8A93C","#9FDCC0","#B79CE8","#FFD9E5"];
+  const ps = Array.from({length:90}, () => ({
+    x: Math.random()*cv.width, y: -20 - Math.random()*cv.height*.5,
+    w: 6+Math.random()*6, h: 8+Math.random()*8,
+    vy: 1.6+Math.random()*2.4, vx: -1+Math.random()*2,
+    rot: Math.random()*Math.PI, vr: -.08+Math.random()*.16,
+    c: colors[Math.random()*colors.length|0]
+  }));
+  (function loop(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(p => {
+      p.y += p.vy; p.x += p.vx; p.rot += p.vr;
+      if(p.y > cv.height+20){ p.y = -20; p.x = Math.random()*cv.width; }
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    confettiRAF = requestAnimationFrame(loop);
+  })();
+}
+function stopConfetti(){ if(confettiRAF){ cancelAnimationFrame(confettiRAF); confettiRAF = null; } }
+
+/* ── 꽃잎 ── */
+function petals(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const scene = $("scene");
+  for(let i=0;i<6;i++){
+    const p = document.createElement("span");
+    p.className = "petal";
+    p.textContent = ["🌸","✨","🌷"][i%3];
+    p.style.left = (8 + Math.random()*84) + "%";
+    p.style.animationDuration = (6+Math.random()*6) + "s";
+    p.style.animationDelay = (Math.random()*8) + "s";
+    scene.appendChild(p);
+  }
+}
+
+petals();
+render();
+</script>
